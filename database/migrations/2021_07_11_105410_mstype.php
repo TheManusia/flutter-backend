@@ -15,7 +15,8 @@ class Mstype extends Migration
     {
         Schema::create('mstype', function (Blueprint $table) {
             $table->id();
-            $table->integer('parentid');
+            $table->integer('parentid')->unsigned();
+            $table->foreign('parentid')->references('id')->on('mstype');
             $table->string('typecd');
             $table->string('typenm');
             $table->integer('typeseq');
