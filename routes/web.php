@@ -16,3 +16,7 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->post('types/datatables', 'MsTypeController@show');
+$router->post('types', 'MsTypeController@store');
+$router->get('types/{id}', 'MsTypeController@find');
