@@ -11,12 +11,14 @@ class MsTypeController extends Controller
     public function show(Request $request)
     {
 
+        $data = MsType::skip($request->start)->take($request->length)->get();
+
         return $this->response([
-            'draw' => 3,
-            'start' => 0,
-            'recordsTotal' => 3,
-            'recordsFiltered' => 0,
-            'data' =>  MsType::all()
+            'draw' => (int) $request->draw,
+            'start' => (int) $request->start,
+            'recordsTotal' => MsType::all()->count(),
+            'recordsFiltered' => MsType::all()->count(),
+            'data' =>  $data
         ]);
     }
 
