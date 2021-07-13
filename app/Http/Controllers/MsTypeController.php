@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MsType;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use function response;
 
 class MsTypeController extends Controller
 {
@@ -14,19 +14,21 @@ class MsTypeController extends Controller
         $data = MsType::skip($request->start)->take($request->length)->get();
 
         return $this->response([
-            'draw' => (int) $request->draw,
-            'start' => (int) $request->start,
+            'draw' => (int)$request->draw,
+            'start' => (int)$request->start,
             'recordsTotal' => MsType::all()->count(),
             'recordsFiltered' => MsType::all()->count(),
-            'data' =>  $data
-        ]);
+            'data' => $data
+        ], 200, true, 'OK');
     }
 
-    public function find($id) {
-        return $this->response(MsType::find($id));
+    public function find($id)
+    {
+        return $this->response(MsType::find($id), 200, true, 'OK');
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $type = new MsType;
 
@@ -37,22 +39,31 @@ class MsTypeController extends Controller
         $type->description = $request->description;
 
         if ($type->save()) {
-            return (new Response('Success', 200));
+            return $this->response("OK", 200, true, 'OK');
         }
-        return (new Response('Failed', 500));
+        return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
-    private function response($data) {
-        return \response()->json([
-            'result' => true,
-            'status' => 200,
-            'message' => 'OK',
-            'code' => 200,
+    private function response($data, $status, $result, $message)
+    {
+        return response()->json([
+            'result' => $result,
+            'status' => $status,
+            'message' => $message,
+            'code' => $status,
             'data' => $data,
         ]);
     }
 
-    public function getResponse($data) {
-        return $this->response($data);
+    public function select(Request $request)
+    {
+        $data = MsType::where('typenm', 'like', "%$request->searchValue%")->get();
+
+        return (new MsTypeController)->getResponse($data, 200, true, 'OK');
+    }
+
+    public function getResponse($data, $status, $result, $message)
+    {
+        return $this->response($data, $status, $result, $message);
     }
 }
