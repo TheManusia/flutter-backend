@@ -13,12 +13,17 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->group(['middleware' => 'cors'], function () use ($router) {
+    $router->get('/', function () use ($router) {
+        return $router->app->version();
+    });
 
-$router->post('types/datatables', 'MsTypeController@show');
-$router->post('types', 'MsTypeController@store');
-$router->get('types[/{id:[0-9]+}]', 'MsTypeController@find');
-$router->get('types/select', 'MsTypeController@select');
-$router->post('types/update/{id}', 'MsTypeController@update');
+    $router->group(['prefix' => 'types'], function () use ($router) {
+        $router->post('/datatables', ['uses' => 'MsTypeController@show']);
+        $router->post('/', ['uses' => 'MsTypeController@store']);
+        $router->get('[/{id:[0-9]+}]', ['uses' => 'MsTypeController@find']);
+        $router->get('/select', ['uses' => 'MsTypeController@select']);
+        $router->post('/update/{id}', ['uses' => 'MsTypeController@update']);
+        $router->post('/delete/{id}', ['uses' => 'MsTypeController@delete']);
+    });
+});
