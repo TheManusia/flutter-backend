@@ -14,9 +14,10 @@ class Mstype extends Migration
     public function up()
     {
         Schema::create('mstype', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id')->unsigned()->unique();
             $table->integer('parentid')->unsigned();
-            $table->foreign('parentid')->references('id')->on('mstype');
+            $table->primary(['id', 'parentid']);
+            $table->foreign(['id', 'parentid'])->references(['id', 'parentid'])->on('mstype');
             $table->string('typecd');
             $table->string('typenm');
             $table->integer('typeseq');
