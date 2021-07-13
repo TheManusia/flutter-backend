@@ -57,13 +57,14 @@ class MsTypeController extends Controller
 
     public function select(Request $request)
     {
-        $datas = MsType::where('typenm', 'like', "%$request->searchValue%")
-            ->where('id', '!=', $request->typeid)
-            ->get();
+        $datas = MsType::where('typenm', 'like', "%$request->searchValue%");
 
+        if ($request->typeid != '') {
+            $datas->where('id', '!=', $request->typeid);
+        }
         $result = [];
 
-        foreach ($datas as $data) {
+        foreach (($datas->get()) as $data) {
             array_push($result, [
                 'value' => $data->id,
                 'text' => $data->typenm
