@@ -21,3 +21,4 @@ $router->post('types/datatables', 'MsTypeController@show');
 $router->post('types', 'MsTypeController@store');
 $router->get('types[/{id:[0-9]+}]', 'MsTypeController@find');
 $router->get('types/select', 'MsTypeController@select');
+$router->post('types/update/{id}', 'MsTypeController@update');

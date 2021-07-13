@@ -29,14 +29,9 @@ class MsTypeController extends Controller
 
     public function store(Request $request)
     {
-
         $type = new MsType;
 
-        $type->parentid = $request->parentid;
-        $type->typecd = $request->typecd;
-        $type->typenm = $request->typenm;
-        $type->typeseq = $request->typeseq;
-        $type->description = $request->description;
+        $type = $this->insert($request, $type);
 
         if ($type->save()) {
             return $this->response("OK", 200, true, 'OK');
@@ -77,5 +72,26 @@ class MsTypeController extends Controller
     public function getResponse($data, $status, $result, $message)
     {
         return $this->response($data, $status, $result, $message);
+    }
+
+    public function update(Request $request, $id) {
+        $type = MsType::find($id);
+
+        $type = $this->insert($request, $type);
+
+        if ($type->save()) {
+            return $this->response("OK", 200, true, 'OK');
+        }
+        return $this->response("Failed", 500, false, 'Failed to save data');
+    }
+
+    private function insert($request, $type) {
+        $type->parentid = $request->parentid;
+        $type->typecd = $request->typecd;
+        $type->typenm = $request->typenm;
+        $type->typeseq = $request->typeseq;
+        $type->description = $request->description;
+
+        return $type;
     }
 }
