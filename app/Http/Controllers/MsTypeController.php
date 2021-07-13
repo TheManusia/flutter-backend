@@ -94,4 +94,13 @@ class MsTypeController extends Controller
 
         return $type;
     }
+
+    public function delete(Request $request, $id) {
+        $type = MsType::find($id);
+
+        if ($type->delete()) {
+            return $this->response("OK", 200, true, 'OK');
+        }
+        return $this->response("Failed", 500, false, 'Failed to delete data');
+    }
 }
