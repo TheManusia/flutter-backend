@@ -69,9 +69,9 @@ class MsTypeController extends Controller
         return (new MsTypeController)->getResponse($result, 200, true, 'OK');
     }
 
-    public function getResponse($data, $status, $result, $message)
+    public static function getResponse($data, $status, $result, $message)
     {
-        return $this->response($data, $status, $result, $message);
+        return (new MsTypeController())->response($data, $status, $result, $message);
     }
 
     public function update(Request $request, $id) {

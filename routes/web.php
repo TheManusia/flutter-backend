@@ -26,4 +26,8 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
         $router->post('/update/{id}', ['uses' => 'MsTypeController@update']);
         $router->post('/delete/{id}', ['uses' => 'MsTypeController@delete']);
     });
+
+    $router->group(['prefix' => 'products'], function () use ($router) {
+        $router->post('/datatables', ['uses' => 'MsProductController@show']);
+    });
 });
