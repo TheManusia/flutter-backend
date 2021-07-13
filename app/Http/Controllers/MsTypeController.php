@@ -11,7 +11,7 @@ class MsTypeController extends Controller
     public function show(Request $request)
     {
 
-        $data = MsType::skip($request->start)->take($request->length)->get();
+        $data = MsType::with('parent')->skip($request->start)->take($request->length)->get();
 
         return $this->response([
             'draw' => (int)$request->draw,
@@ -57,9 +57,20 @@ class MsTypeController extends Controller
 
     public function select(Request $request)
     {
-        $data = MsType::where('typenm', 'like', "%$request->searchValue%")->get();
+        $datas = MsType::where('typenm', 'like', "%$request->searchValue%")
+            ->where('id', '!=', $request->typeid)
+            ->get();
 
-        return (new MsTypeController)->getResponse($data, 200, true, 'OK');
+        $result = [];
+
+        foreach ($datas as $data) {
+            array_push($result, [
+                'value' => $data->id,
+                'text' => $data->typenm
+            ]);
+        }
+
+        return (new MsTypeController)->getResponse($result, 200, true, 'OK');
     }
 
     public function getResponse($data, $status, $result, $message)

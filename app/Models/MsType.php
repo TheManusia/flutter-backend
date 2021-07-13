@@ -12,4 +12,8 @@ class MsType extends Model
 {
     protected $table = 'mstype';
     public $timestamps = false;
+
+    public function parent() {
+        return $this->belongsTo(MsType::class, 'parentid');
+    }
 }
