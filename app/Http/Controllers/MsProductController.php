@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\MsProduct;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class MsProductController extends Controller
@@ -46,16 +45,6 @@ class MsProductController extends Controller
         return $this->response(MsProduct::find($id), 200, true, 'OK');
     }
 
-    private function insert($request, $product)
-    {
-        $product->typeid = $request->typeid;
-        $product->productcd = $request->productcd;
-        $product->productnm = $request->productnm;
-        $product->description = $request->description;
-
-        return $product;
-    }
-
     public function update(Request $request, $id)
     {
         $product = MsProduct::find($id);
@@ -66,6 +55,25 @@ class MsProductController extends Controller
             return $this->response("OK", 200, true, 'OK');
         }
         return $this->response("Failed", 500, false, 'Failed to save data');
+    }
+
+    public function delete(Request $request, $id) {
+        $product = MsProduct::find($id);
+
+        if ($product->delete()) {
+            return $this->response("OK", 200, true, 'OK');
+        }
+        return $this->response("Failed", 500, false, 'Failed to delete data');
+    }
+
+    private function insert($request, $product)
+    {
+        $product->typeid = $request->typeid;
+        $product->productcd = $request->productcd;
+        $product->productnm = $request->productnm;
+        $product->description = $request->description;
+
+        return $product;
     }
 
     private function response($data, $status, $result, $message)
