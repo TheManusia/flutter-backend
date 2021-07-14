@@ -29,5 +29,6 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
 
     $router->group(['prefix' => 'products'], function () use ($router) {
         $router->post('/datatables', ['uses' => 'MsProductController@show']);
+        $router->post('/', ['uses' => 'MsProductController@store']);
     });
 });

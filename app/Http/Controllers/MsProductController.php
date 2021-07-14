@@ -21,6 +21,27 @@ class MsProductController extends Controller
         ], 200, true, 'OK');
     }
 
+    public function store(Request $request)
+    {
+        $product = new MsProduct();
+
+        $product = $this->insert($request, $product);
+
+        if ($product->save()) {
+            return $this->response("OK", 200, true, 'OK');
+        }
+        return $this->response("Failed", 500, false, 'Failed to save data');
+    }
+
+    private function insert($request, $product) {
+        $product->typeid = $request->typeid;
+        $product->productcd = $request->productcd;
+        $product->productnm = $request->productnm;
+        $product->description = $request->description;
+
+        return $product;
+    }
+
     private function response($data, $status, $result, $message) {
         return MsTypeController::getResponse($data, $status, $result, $message);
     }
