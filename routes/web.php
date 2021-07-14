@@ -32,5 +32,6 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
         $router->post('/', ['uses' => 'MsProductController@store']);
         $router->get('/{id:[0-9]+}', ['uses' => 'MsProductController@find']);
         $router->get('/select', ['uses' => 'MsProductController@select']);
+        $router->post('/update/{id}', ['uses' => 'MsProductController@update']);
     });
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MsProduct;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class MsProductController extends Controller
@@ -53,6 +54,18 @@ class MsProductController extends Controller
         $product->description = $request->description;
 
         return $product;
+    }
+
+    public function update(Request $request, $id)
+    {
+        $product = MsProduct::find($id);
+
+        $product = $this->insert($request, $product);
+
+        if ($product->save()) {
+            return $this->response("OK", 200, true, 'OK');
+        }
+        return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
     private function response($data, $status, $result, $message)
