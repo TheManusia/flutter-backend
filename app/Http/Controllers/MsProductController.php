@@ -33,7 +33,20 @@ class MsProductController extends Controller
         return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
-    private function insert($request, $product) {
+    public function select(Request $request)
+    {
+        $data = MsProduct::where('productnm', 'like', "%$request->searchValue%")->get();
+
+        return MsTypeController::getResponse($data, 200, true, 'OK');
+    }
+
+    public function find($id)
+    {
+        return $this->response(MsProduct::find($id), 200, true, 'OK');
+    }
+
+    private function insert($request, $product)
+    {
         $product->typeid = $request->typeid;
         $product->productcd = $request->productcd;
         $product->productnm = $request->productnm;
@@ -42,7 +55,8 @@ class MsProductController extends Controller
         return $product;
     }
 
-    private function response($data, $status, $result, $message) {
+    private function response($data, $status, $result, $message)
+    {
         return MsTypeController::getResponse($data, $status, $result, $message);
     }
 }

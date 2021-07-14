@@ -21,7 +21,7 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
     $router->group(['prefix' => 'types'], function () use ($router) {
         $router->post('/datatables', ['uses' => 'MsTypeController@show']);
         $router->post('/', ['uses' => 'MsTypeController@store']);
-        $router->get('[/{id:[0-9]+}]', ['uses' => 'MsTypeController@find']);
+        $router->get('/{id:[0-9]+}', ['uses' => 'MsTypeController@find']);
         $router->get('/select', ['uses' => 'MsTypeController@select']);
         $router->post('/update/{id}', ['uses' => 'MsTypeController@update']);
         $router->post('/delete/{id}', ['uses' => 'MsTypeController@delete']);
@@ -30,5 +30,7 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
     $router->group(['prefix' => 'products'], function () use ($router) {
         $router->post('/datatables', ['uses' => 'MsProductController@show']);
         $router->post('/', ['uses' => 'MsProductController@store']);
+        $router->get('/{id:[0-9]+}', ['uses' => 'MsProductController@find']);
+        $router->get('/select', ['uses' => 'MsProductController@select']);
     });
 });
