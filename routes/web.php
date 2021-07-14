@@ -27,7 +27,7 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
         $router->post('/delete/{id}', ['uses' => 'MsTypeController@delete']);
     });
 
-    $router->group(['prefix' => 'products'], function () use ($router) {
+    $router->group(['prefix' => 'product'], function () use ($router) {
         $router->post('/datatables', ['uses' => 'MsProductController@show']);
         $router->post('/', ['uses' => 'MsProductController@store']);
         $router->get('/{id:[0-9]+}', ['uses' => 'MsProductController@find']);

@@ -14,6 +14,6 @@ class MsType extends Model
     public $timestamps = false;
 
     public function parent() {
-        return $this->belongsTo(MsType::class, 'parentid');
+        return $this->belongsTo(MsType::class, 'id');
     }
 }
