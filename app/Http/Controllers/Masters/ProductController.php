@@ -77,28 +77,20 @@ class ProductController extends Controller
         }
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
-        $product = Product::find($id);
+        try {
 
-        if ($product->delete()) {
-            return $this->response("OK", 200, true, 'OK');
+            $row = $this->products->find($id);
+
+            if (is_null($row))
+                throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
+
+            $row->delete();
+
+            return $this->jsonSuccess(DBMessage::SUCCESS_DELETED);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        return $this->response("Failed", 500, false, 'Failed to delete data');
-    }
-
-    private function insert($request, $product)
-    {
-        $product->typeid = $request->typeid;
-        $product->productcd = $request->productcd;
-        $product->productnm = $request->productnm;
-        $product->description = $request->description;
-
-        return $product;
-    }
-
-    private function response($data, $status, $result, $message)
-    {
-        return TypeController::getResponse($data, $status, $result, $message);
     }
 }

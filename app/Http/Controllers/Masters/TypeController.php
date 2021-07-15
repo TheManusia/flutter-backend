@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function response;
 
 class TypeController extends Controller
 {
@@ -42,7 +41,7 @@ class TypeController extends Controller
             $row = $this->types->withJoin($this->types->defaultSelects)
                 ->find($id);
 
-            if(is_null($row))
+            if (is_null($row))
                 throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
 
             return $this->jsonSuccess(null, $row);
@@ -62,36 +61,25 @@ class TypeController extends Controller
         }
     }
 
-    private function response($data, $status, $result, $message)
-    {
-        return response()->json([
-            'result' => $result,
-            'status' => $status,
-            'message' => $message,
-            'code' => $status,
-            'data' => $data,
-        ]);
-    }
-
     public function select(Request $request)
     {
         try {
             $searchValue = trim(strtolower($request->searchValue));
             $query = $this->types->withJoin($this->types->defaultSelects)
-                ->where(function($query) use ($searchValue) {
+                ->where(function ($query) use ($searchValue) {
                     /* @var Relation $query */
                     $query->where(DB::raw('typecd'), 'like', "%$searchValue%");
                     $query->orWhere(DB::raw('typenm'), 'like', "%$searchValue%");
                 });
 
-            if($request->has('typeid') && !empty($request->typeid)) {
+            if ($request->has('typeid') && !empty($request->typeid)) {
                 $typeid = $request->post('typeid');
                 $query->where('id', '!=', $typeid);
                 $query->where('parentid', '!=', $typeid);
             }
 
             $json = array();
-            foreach($query->get() as $db) {
+            foreach ($query->get() as $db) {
                 $json[] = ['value' => $db->id, 'text' => $db->typenm];
             }
 
@@ -101,18 +89,13 @@ class TypeController extends Controller
         }
     }
 
-    public static function getResponse($data, $status, $result, $message)
-    {
-        return (new TypeController())->response($data, $status, $result, $message);
-    }
-
     public function update(Request $request, $id)
     {
         try {
 
             $row = $this->types->find($id);
 
-            if(is_null($row))
+            if (is_null($row))
                 throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
 
             $row->update($request->all());
@@ -123,13 +106,13 @@ class TypeController extends Controller
         }
     }
 
-    public function delete( $id)
+    public function delete($id)
     {
         try {
 
             $row = $this->types->find($id);
 
-            if(is_null($row))
+            if (is_null($row))
                 throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
 
             $row->delete();
