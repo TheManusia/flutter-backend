@@ -108,25 +108,19 @@ class TypeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $type = Types::find($id);
+        try {
 
-        $type = $this->insert($request, $type);
+            $row = $this->types->find($id);
 
-        if ($type->save()) {
-            return $this->response("OK", 200, true, 'OK');
+            if(is_null($row))
+                throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
+
+            $row->update($request->all());
+
+            return $this->jsonSuccess(DBMessage::SUCCESS_EDIT);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        return $this->response("Failed", 500, false, 'Failed to save data');
-    }
-
-    private function insert($request, $type)
-    {
-        $type->parentid = $request->parentid;
-        $type->typecd = $request->typecd;
-        $type->typenm = $request->typenm;
-        $type->typeseq = $request->typeseq;
-        $type->description = $request->description;
-
-        return $type;
     }
 
     public function delete(Request $request, $id)
