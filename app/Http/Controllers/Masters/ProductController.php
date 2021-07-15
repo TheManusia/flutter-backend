@@ -4,22 +4,33 @@ namespace App\Http\Controllers\Masters;
 
 use App\Http\Controllers\Controller;
 use App\Models\Masters\Product;
+use Exception;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 
+    /* @var Product|Relation */
+    protected $products;
+
+    public function __construct()
+    {
+        $this->products = new Product();
+    }
+
     public function show(Request $request)
     {
-        $data = Product::with('type')->skip($request->start)->take($request->length)->get();
-
-        return $this->response([
-            'draw' => (int)$request->draw,
-            'start' => (int)$request->start,
-            'recordsTotal' => Product::all()->count(),
-            'recordsFiltered' => Product::all()->count(),
-            'data' => $data
-        ], 200, true, 'OK');
+        try {
+            $data = $this->products->withJoin($this->products->defaultSelects);
+            return $this->jsonSuccess(null, datatables()->eloquent($data)
+                ->with('start', intval($request->start))
+                ->toJson()
+                ->getOriginalContent()
+            );
+        } catch (Exception $e) {
+            return $this->jsonError($e);
+        }
     }
 
     public function store(Request $request)

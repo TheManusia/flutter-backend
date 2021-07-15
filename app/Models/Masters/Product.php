@@ -14,17 +14,16 @@ class Product extends Model
     protected $table = 'msproduct';
     protected $fillable = [
         "typeid",
-        "typecd",
-        "typenm",
+        "productcd",
+        "productnm",
         "description"
     ];
 
     public $timestamps = false;
 
     public $defaultSelects = array(
-        "typeid",
-        "typecd",
-        "typenm",
+        "productcd",
+        "productnm",
         "description",
     );
 
@@ -40,22 +39,22 @@ class Product extends Model
     }
 
     /**
-     * @param Relation|Types $query
+     * @param Relation|Product $query
      * @param array $selects
      * @return Relation
      * */
     private function _withJoin($query, $selects = array())
     {
         return $query->with([
-            'parent' => function($query) {
-                Product::foreignSelect($query);
+            'type' => function ($query) {
+                Types::select($query);
             }
         ])->select('id', 'typeid')->addSelect($selects);
     }
 
     /**
      * @param array $selects
-     * @param Relation|Types
+     * @param Relation|Product
      * @return Relation
      * */
     public function withJoin($selects = array(), $query = null)

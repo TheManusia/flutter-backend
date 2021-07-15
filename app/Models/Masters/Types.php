@@ -40,6 +40,12 @@ class Types extends Model
         return $types->withJoin(is_null($selects) ? $types->defaultSelects : $selects, $query);
     }
 
+    static public function select($query, $selects = null)
+    {
+        $types = new Types();
+        return $types->withoutJoin(is_null($selects) ? $types->defaultSelects : $selects, $query);
+    }
+
     /**
      * @param Relation|Types $query
      * @param array $selects
@@ -47,11 +53,21 @@ class Types extends Model
      * */
     private function _withJoin($query, $selects = array())
     {
-        return $query->with([
+        return $this->_withoutJoin($query->with([
             'parent' => function($query) {
-                Types::foreignSelect($query);
+                Types::select($query);
             }
-        ])->select('id', 'parentid')->addSelect($selects);
+        ]), $selects);
+    }
+
+    /**
+     * @param Relation|Types $query
+     * @param array $selects
+     * @return Relation
+     * */
+    private function _withoutJoin($query, $selects = array())
+    {
+        return $query->select('id', 'parentid')->addSelect($selects);
     }
 
     /**
@@ -62,6 +78,16 @@ class Types extends Model
     public function withJoin($selects = array(), $query = null)
     {
         return $this->_withJoin(is_null($query) ? $this : $query, is_array($selects) ? $selects : func_get_args());
+    }
+
+    /**
+     * @param array $selects
+     * @param Relation|Types
+     * @return Relation
+     * */
+    public function withoutJoin($selects = array(), $query = null)
+    {
+        return $this->_withoutJoin(is_null($query) ? $this : $query, is_array($selects) ? $selects : func_get_args());
     }
 
     public function parent()
