@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Masters;
 
+use App\Constant\DBMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Masters\Product;
 use Exception;
@@ -35,14 +36,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $product = new Product();
+        try {
+            $this->products->create($request->all());
 
-        $product = $this->insert($request, $product);
-
-        if ($product->save()) {
-            return $this->response("OK", 200, true, 'OK');
+            return $this->jsonSuccess(DBMessage::SUCCESS_ADD);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
     public function select(Request $request)
