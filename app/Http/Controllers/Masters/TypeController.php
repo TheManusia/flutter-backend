@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Masters;
 
+use App\Constant\DBCode;
+use App\Constant\DBMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Masters\Types;
 use Exception;
@@ -35,7 +37,17 @@ class TypeController extends Controller
 
     public function find($id)
     {
-        return $this->response(Types::find($id), 200, true, 'OK');
+        try {
+            $row = $this->types->withJoin($this->types->defaultSelects)
+                ->find($id);
+
+            if(is_null($row))
+                throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
+
+            return $this->jsonSuccess(null, $row);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
+        }
     }
 
     public function store(Request $request)
