@@ -52,14 +52,13 @@ class TypeController extends Controller
 
     public function store(Request $request)
     {
-        $type = new Types;
+        try {
+            $this->types->create($request->all());
 
-        $type = $this->insert($request, $type);
-
-        if ($type->save()) {
-            return $this->response("OK", 200, true, 'OK');
+            return $this->jsonSuccess(DBMessage::SUCCESS_ADD);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
     private function response($data, $status, $result, $message)
