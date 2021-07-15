@@ -84,8 +84,8 @@ class TypeController extends Controller
                     $query->orWhere(DB::raw('typenm'), 'like', "%$searchValue%");
                 });
 
-            if($request->has('typeid') && !empty($req->typeid)) {
-                $typeid = $req->post('typeid');
+            if($request->has('typeid') && !empty($request->typeid)) {
+                $typeid = $request->post('typeid');
                 $query->where('id', '!=', $typeid);
                 $query->where('parentid', '!=', $typeid);
             }
