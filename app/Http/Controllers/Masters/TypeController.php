@@ -9,6 +9,7 @@ use App\Models\Masters\Types;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use function response;
 
 class TypeController extends Controller
@@ -74,21 +75,30 @@ class TypeController extends Controller
 
     public function select(Request $request)
     {
-        $datas = Types::where('typenm', 'like', "%$request->searchValue%");
+        try {
+            $searchValue = trim(strtolower($request->searchValue));
+            $query = $this->types->withJoin($this->types->defaultSelects)
+                ->where(function($query) use ($searchValue) {
+                    /* @var Relation $query */
+                    $query->where(DB::raw('typecd'), 'like', "%$searchValue%");
+                    $query->orWhere(DB::raw('typenm'), 'like', "%$searchValue%");
+                });
 
-        if ($request->typeid != '') {
-            $datas->where('id', '!=', $request->typeid);
+            if($request->has('typeid') && !empty($req->typeid)) {
+                $typeid = $req->post('typeid');
+                $query->where('id', '!=', $typeid);
+                $query->where('parentid', '!=', $typeid);
+            }
+
+            $json = array();
+            foreach($query->get() as $db) {
+                $json[] = ['value' => $db->id, 'text' => $db->typenm];
+            }
+
+            return $this->jsonSuccess(null, $json);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        $result = [];
-
-        foreach (($datas->get()) as $data) {
-            array_push($result, [
-                'value' => $data->id,
-                'text' => $data->typenm
-            ]);
-        }
-
-        return (new TypeController)->getResponse($result, 200, true, 'OK');
     }
 
     public static function getResponse($data, $status, $result, $message)
