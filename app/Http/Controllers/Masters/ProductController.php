@@ -46,20 +46,13 @@ class ProductController extends Controller
         }
     }
 
-    public function select(Request $request)
-    {
-        $data = Product::where('productnm', 'like', "%$request->searchValue%")->get();
-
-        return TypeController::getResponse($data, 200, true, 'OK');
-    }
-
     public function find($id)
     {
         try {
             $row = $this->products->withJoin($this->products->defaultSelects)
                 ->find($id);
 
-            if(is_null($row))
+            if (is_null($row))
                 throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
 
             return $this->jsonSuccess(null, $row);

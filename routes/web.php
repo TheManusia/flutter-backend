@@ -32,7 +32,6 @@ $router->group(['middleware' => 'cors'], function () use ($router) {
             $router->post('/datatables', ['uses' => 'ProductController@show']);
             $router->post('/', ['uses' => 'ProductController@store']);
             $router->get('/{id:[0-9]+}', ['uses' => 'ProductController@find']);
-            $router->get('/select', ['uses' => 'ProductController@select']);
             $router->post('/update/{id}', ['uses' => 'ProductController@update']);
             $router->post('/delete/{id}', ['uses' => 'ProductController@delete']);
         });
