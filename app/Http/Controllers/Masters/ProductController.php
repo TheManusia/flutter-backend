@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Masters;
 
+use App\Http\Controllers\Controller;
 use App\Models\MsProduct;
 use Illuminate\Http\Request;
 
-class MsProductController extends Controller
+class ProductController extends Controller
 {
 
     public function show(Request $request)
@@ -37,7 +38,7 @@ class MsProductController extends Controller
     {
         $data = MsProduct::where('productnm', 'like', "%$request->searchValue%")->get();
 
-        return MsTypeController::getResponse($data, 200, true, 'OK');
+        return TypeController::getResponse($data, 200, true, 'OK');
     }
 
     public function find($id)
@@ -57,7 +58,8 @@ class MsProductController extends Controller
         return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id)
+    {
         $product = MsProduct::find($id);
 
         if ($product->delete()) {
@@ -78,6 +80,6 @@ class MsProductController extends Controller
 
     private function response($data, $status, $result, $message)
     {
-        return MsTypeController::getResponse($data, $status, $result, $message);
+        return TypeController::getResponse($data, $status, $result, $message);
     }
 }

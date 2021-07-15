@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Masters;
 
+use App\Http\Controllers\Controller;
 use App\Models\MsType;
 use Illuminate\Http\Request;
 use function response;
 
-class MsTypeController extends Controller
+class TypeController extends Controller
 {
     public function show(Request $request)
     {
@@ -66,15 +67,16 @@ class MsTypeController extends Controller
             ]);
         }
 
-        return (new MsTypeController)->getResponse($result, 200, true, 'OK');
+        return (new TypeController)->getResponse($result, 200, true, 'OK');
     }
 
     public static function getResponse($data, $status, $result, $message)
     {
-        return (new MsTypeController())->response($data, $status, $result, $message);
+        return (new TypeController())->response($data, $status, $result, $message);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $type = MsType::find($id);
 
         $type = $this->insert($request, $type);
@@ -85,7 +87,8 @@ class MsTypeController extends Controller
         return $this->response("Failed", 500, false, 'Failed to save data');
     }
 
-    private function insert($request, $type) {
+    private function insert($request, $type)
+    {
         $type->parentid = $request->parentid;
         $type->typecd = $request->typecd;
         $type->typenm = $request->typenm;
@@ -95,7 +98,8 @@ class MsTypeController extends Controller
         return $type;
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id)
+    {
         $type = MsType::find($id);
 
         if ($type->delete()) {
