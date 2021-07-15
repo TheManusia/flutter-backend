@@ -3,34 +3,44 @@
 namespace App\Http\Controllers\Masters;
 
 use App\Http\Controllers\Controller;
-use App\Models\MsType;
+use App\Models\Masters\Types;
+use Exception;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use function response;
 
 class TypeController extends Controller
 {
+    /* @var Types|Relation */
+    protected $types;
+
+    public function __construct()
+    {
+        $this->types = new Types();
+    }
+
     public function show(Request $request)
     {
-
-        $data = MsType::with('parent')->skip($request->start)->take($request->length)->get();
-
-        return $this->response([
-            'draw' => (int)$request->draw,
-            'start' => (int)$request->start,
-            'recordsTotal' => MsType::all()->count(),
-            'recordsFiltered' => MsType::all()->count(),
-            'data' => $data
-        ], 200, true, 'OK');
+        try {
+            $data = $this->types->withJoin($this->types->defaultSelects);
+            return $this->jsonSuccess(null, datatables()->eloquent($data)
+                ->with('start', intval($request->start))
+                ->toJson()
+                ->getOriginalContent()
+            );
+        } catch (Exception $e) {
+            return $this->jsonError($e);
+        }
     }
 
     public function find($id)
     {
-        return $this->response(MsType::find($id), 200, true, 'OK');
+        return $this->response(Types::find($id), 200, true, 'OK');
     }
 
     public function store(Request $request)
     {
-        $type = new MsType;
+        $type = new Types;
 
         $type = $this->insert($request, $type);
 
@@ -53,7 +63,7 @@ class TypeController extends Controller
 
     public function select(Request $request)
     {
-        $datas = MsType::where('typenm', 'like', "%$request->searchValue%");
+        $datas = Types::where('typenm', 'like', "%$request->searchValue%");
 
         if ($request->typeid != '') {
             $datas->where('id', '!=', $request->typeid);
@@ -77,7 +87,7 @@ class TypeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $type = MsType::find($id);
+        $type = Types::find($id);
 
         $type = $this->insert($request, $type);
 
@@ -100,7 +110,7 @@ class TypeController extends Controller
 
     public function delete(Request $request, $id)
     {
-        $type = MsType::find($id);
+        $type = Types::find($id);
 
         if ($type->delete()) {
             return $this->response("OK", 200, true, 'OK');

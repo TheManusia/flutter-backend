@@ -1,5 +1,7 @@
 <?php
 
+use Yajra\DataTables\DataTablesServiceProvider;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -76,9 +78,9 @@ $app->configure('app');
 //        'cors' => App\Http\Middleware\CorsMiddleware::class
 //  ]);
 
- $app->routeMiddleware([
-     'cors' => App\Http\Middleware\CorsMiddleware::class
- ]);
+$app->routeMiddleware([
+    'cors' => App\Http\Middleware\CorsMiddleware::class
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +97,7 @@ $app->configure('app');
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(DataTablesServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
