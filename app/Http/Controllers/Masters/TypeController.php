@@ -123,13 +123,20 @@ class TypeController extends Controller
         }
     }
 
-    public function delete(Request $request, $id)
+    public function delete( $id)
     {
-        $type = Types::find($id);
+        try {
 
-        if ($type->delete()) {
-            return $this->response("OK", 200, true, 'OK');
+            $row = $this->types->find($id);
+
+            if(is_null($row))
+                throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
+
+            $row->delete();
+
+            return $this->jsonSuccess(DBMessage::SUCCESS_DELETED);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
         }
-        return $this->response("Failed", 500, false, 'Failed to delete data');
     }
 }
