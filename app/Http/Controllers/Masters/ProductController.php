@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Masters;
 
+use App\Constant\DBCode;
 use App\Constant\DBMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Masters\Product;
@@ -54,7 +55,17 @@ class ProductController extends Controller
 
     public function find($id)
     {
-        return $this->response(Product::find($id), 200, true, 'OK');
+        try {
+            $row = $this->products->withJoin($this->products->defaultSelects)
+                ->find($id);
+
+            if(is_null($row))
+                throw new Exception(DBMessage::ERROR_CORRUPT_DATA, DBCode::AUTHORIZED_ERROR);
+
+            return $this->jsonSuccess(null, $row);
+        } catch (Exception $e) {
+            return $this->jsonError($e);
+        }
     }
 
     public function update(Request $request, $id)
