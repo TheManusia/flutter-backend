@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     private $table = 'msuser';
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
@@ -21,22 +22,21 @@ class AuthController extends Controller
     {
         //validate incoming request
         $this->validate($request, [
+            'fullname' => 'required|string',
             'username' => "required|string|unique:$this->table",
             'password' => 'required|confirmed',
         ]);
 
-        try
-        {
+        try {
             $user = new Users();
-            $user->username= $request->input('username');
+            $user->fullname = $request->input('fullname');
+            $user->username = $request->input('username');
             $user->userpassword = app('hash')->make($request->input('password'));
             $user->save();
 
             return $this->jsonSuccess(DBMessage::SUCCESS_ADD);
 
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             return $this->jsonError($e);
         }
     }
@@ -51,7 +51,7 @@ class AuthController extends Controller
 
             $credentials = $request->only(['username', 'password']);
 
-            if (! $token = Auth::attempt($credentials)) {
+            if (!$token = Auth::attempt($credentials)) {
                 return response()->json(['message' => DBMessage::USER_NOT_FOUND], DBCode::UNAUTHORIZED);
             }
 
