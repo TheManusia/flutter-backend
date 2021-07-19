@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constant\DBCode;
+use App\Constant\DBMessage;
 use App\Models\Users;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,20 +32,12 @@ class AuthController extends Controller
             $user->userpassword = app('hash')->make($request->input('password'));
             $user->save();
 
-            return response()->json( [
-                'entity' => 'users',
-                'action' => 'create',
-                'result' => 'success'
-            ], 201);
+            return $this->jsonSuccess(DBMessage::SUCCESS_ADD);
 
         }
         catch (Exception $e)
         {
-            return response()->json( [
-                'entity' => 'users',
-                'action' => 'create',
-                'result' => 'failed'
-            ], 409);
+            return $this->jsonError($e);
         }
     }
 
@@ -58,7 +52,7 @@ class AuthController extends Controller
             $credentials = $request->only(['username', 'password']);
 
             if (! $token = Auth::attempt($credentials)) {
-                return response()->json(['message' => 'Unauthorized'], 401);
+                return response()->json(['message' => DBMessage::UNAUTHORIZED], DBCode::UNAUTHORIZED);
             }
 
             $response = \auth()->user();
