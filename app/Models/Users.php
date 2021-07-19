@@ -16,11 +16,11 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
     protected $table = 'msuser';
 
     protected $fillable = [
-        'username', 'fullname'
+        'username', 'fullname', 'userpassword'
     ];
 
     protected $hidden = [
-        'password'
+        'userpassword'
     ];
 
     public $timestamps = false;
@@ -33,5 +33,10 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->userpassword;
     }
 }
