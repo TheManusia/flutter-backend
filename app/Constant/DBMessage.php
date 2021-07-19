@@ -16,5 +16,5 @@ class DBMessage
     const ERROR_CORRUPT_DATA = "Data tidak ditemukan";
     const DATA_EXIST = "Data %s sudah ada";
 
-    const UNAUTHORIZED = "Tidak bisa diakses";
+    const USER_NOT_FOUND = "Nama pengguna atau kata sandi tidak ditemukan";
 }

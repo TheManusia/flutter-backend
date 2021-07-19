@@ -52,7 +52,7 @@ class AuthController extends Controller
             $credentials = $request->only(['username', 'password']);
 
             if (! $token = Auth::attempt($credentials)) {
-                return response()->json(['message' => DBMessage::UNAUTHORIZED], DBCode::UNAUTHORIZED);
+                return response()->json(['message' => DBMessage::USER_NOT_FOUND], DBCode::UNAUTHORIZED);
             }
 
             $response = \auth()->user();
