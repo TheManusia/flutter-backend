@@ -30,19 +30,21 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->group(['namespace' => 'Masters'], function () use ($router) {
         $router->group(['prefix' => 'types'], function () use ($router) {
             $router->post('/datatables', ['uses' => 'TypeController@show']);
+            $router->options('/datatables', ['uses' => 'TypeController@show']);
             $router->post('/', ['uses' => 'TypeController@store']);
             $router->get('/{id:[0-9]+}', ['uses' => 'TypeController@find']);
             $router->get('/select', ['uses' => 'TypeController@select']);
-            $router->post('/update/{id}', ['uses' => 'TypeController@update']);
-            $router->post('/delete/{id}', ['uses' => 'TypeController@delete']);
+            $router->put('/{id}', ['uses' => 'TypeController@update']);
+            $router->delete('/{id}', ['uses' => 'TypeController@delete']);
         });
 
         $router->group(['prefix' => 'product'], function () use ($router) {
             $router->post('/datatables', ['uses' => 'ProductController@show']);
+            $router->options('/datatables', ['uses' => 'ProductController@show']);
             $router->post('/', ['uses' => 'ProductController@store']);
             $router->get('/{id:[0-9]+}', ['uses' => 'ProductController@find']);
-            $router->post('/update/{id}', ['uses' => 'ProductController@update']);
-            $router->post('/delete/{id}', ['uses' => 'ProductController@delete']);
+            $router->put('/{id:[0-9]+}', ['uses' => 'ProductController@update']);
+            $router->delete('/{id:[0-9]+}', ['uses' => 'ProductController@delete']);
         });
     });
 });
